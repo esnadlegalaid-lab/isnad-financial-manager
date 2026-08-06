@@ -1,0 +1,24 @@
+kind = "mobile"
+previewPath = "/"
+title = "Isnad Financial Manager"
+description = "تطبيق جوال عربي لإدارة المال الشخصي دون إنترنت، مع حسابات ومعاملات وديون وقروض وأهداف مالية وتخزين محلي كامل."
+version = "1.0.0"
+id = "artifacts/isnad-financial-manager"
+router = "expo-domain"
+
+[[services]]
+name = "expo"
+ensurePreviewReachable = "/status"
+paths = [ "/" ]
+localPort = 21110
+
+[services.development]
+run = "pnpm --filter @workspace/isnad-financial-manager run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/isnad-financial-manager", "run", "build" ]
+run = [ "pnpm", "--filter", "@workspace/isnad-financial-manager", "run", "serve" ]
+
+[services.env]
+PORT = "21110"
+BASE_PATH = "/"

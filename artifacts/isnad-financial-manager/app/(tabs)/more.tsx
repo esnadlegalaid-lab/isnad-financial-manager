@@ -1,0 +1,13 @@
+import React from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { Screen, AppHeader, IconBadge, SectionTitle } from '@/components/FinanceUI';
+import { useFinance } from '@/store/FinanceContext';
+
+export default function MoreScreen() {
+  const router = useRouter(); const { colors } = useFinance();
+  const items = [{ title: 'الديون', subtitle: 'التزاماتي المالية', icon: 'calendar-alert', color: colors.destructive, route: '/debts' }, { title: 'القروض', subtitle: 'أموال لي لدى الآخرين', icon: 'hand-coin-outline', color: '#5578C8', route: '/loans' }, { title: 'الأهداف المالية', subtitle: 'خطتي للادخار', icon: 'flag-checkered', color: '#AE6DB0', route: '/goals' }, { title: 'الإعدادات', subtitle: 'التفضيلات والعملة', icon: 'cog-outline', color: colors.primary, route: '/settings' }];
+  return <Screen><AppHeader title="المزيد" subtitle="كل أدواتك المالية في مكان واحد" /><SectionTitle title="الإدارة والمتابعة" />{items.map(item => <Pressable key={item.route} onPress={() => router.push(item.route as never)} style={({ pressed }) => [styles.item, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.75 : 1 }]}><MaterialCommunityIcons name="chevron-left" size={20} color={colors.mutedForeground} /><View style={styles.info}><Text style={[styles.title, { color: colors.foreground }]}>{item.title}</Text><Text style={[styles.subtitle, { color: colors.mutedForeground }]}>{item.subtitle}</Text></View><IconBadge icon={item.icon as React.ComponentProps<typeof MaterialCommunityIcons>['name']} color={item.color} size={44} /></Pressable>)}<View style={[styles.privacy, { backgroundColor: colors.secondary }]}><MaterialCommunityIcons name="lock-outline" color={colors.primary} size={23} /><View style={styles.info}><Text style={[styles.title, { color: colors.foreground }]}>بياناتك ملكك</Text><Text style={[styles.subtitle, { color: colors.mutedForeground }]}>كل بياناتك محفوظة على جهازك فقط، دون اتصال بالإنترنت.</Text></View></View></Screen>;
+}
+const styles = StyleSheet.create({ item: { minHeight: 73, borderWidth: 1, borderRadius: 19, marginBottom: 10, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', gap: 12 }, info: { flex: 1, alignItems: 'flex-end' }, title: { fontFamily: 'Inter_700Bold', fontSize: 14 }, subtitle: { fontFamily: 'Inter_400Regular', fontSize: 11, marginTop: 4, textAlign: 'right', lineHeight: 17 }, privacy: { marginTop: 22, borderRadius: 19, padding: 16, flexDirection: 'row-reverse', alignItems: 'center', gap: 12 } });
