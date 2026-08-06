@@ -30,6 +30,7 @@ function RootLayoutNav() {
       <Stack.Screen name="loans" options={{ headerShown: false }} />
       <Stack.Screen name="goals" options={{ headerShown: false }} />
       <Stack.Screen name="settings" options={{ headerShown: false }} />
+      <Stack.Screen name="categories" options={{ headerShown: false }} />
     </Stack>
   );
 }

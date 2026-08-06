@@ -70,41 +70,22 @@ export interface FinanceState {
   settings: Settings;
 }
 
-const STORAGE_KEY = '@isnad_financial_manager_v1';
+const STORAGE_KEY = '@isnad_financial_manager_v3';
+const LEGACY_STORAGE_KEYS = [
+  '@isnad_financial_manager_v1',
+  '@isnad_financial_manager_v2',
+];
 const PALETTE = ['#0C8F74', '#D98E3A', '#5578C8', '#AE6DB0', '#4C9E9A', '#D85555'];
 const makeId = () => `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
 const initialState: FinanceState = {
-  accounts: [
-    { id: 'acc-main', name: 'المحفظة اليومية', type: 'cash', openingBalance: 2450, color: '#0C8F74' },
-    { id: 'acc-bank', name: 'الحساب البنكي', type: 'bank', openingBalance: 12800, color: '#5578C8' },
-    { id: 'acc-save', name: 'حساب الادخار', type: 'savings', openingBalance: 6200, color: '#D98E3A' },
-  ],
-  categories: [
-    { id: 'cat-salary', name: 'الراتب', type: 'income', color: '#0C8F74' },
-    { id: 'cat-freelance', name: 'عمل حر', type: 'income', color: '#4C9E9A' },
-    { id: 'cat-food', name: 'طعام ومطاعم', type: 'expense', color: '#D85555' },
-    { id: 'cat-transport', name: 'مواصلات', type: 'expense', color: '#D98E3A' },
-    { id: 'cat-bills', name: 'فواتير', type: 'expense', color: '#5578C8' },
-  ],
-  transactions: [
-    { id: 'tx-1', accountId: 'acc-bank', categoryId: 'cat-salary', type: 'income', amount: 15000, note: 'راتب شهر أغسطس', date: '2026-08-01' },
-    { id: 'tx-2', accountId: 'acc-main', categoryId: 'cat-food', type: 'expense', amount: 86, note: 'غداء العمل', date: '2026-08-05' },
-    { id: 'tx-3', accountId: 'acc-bank', categoryId: 'cat-bills', type: 'expense', amount: 420, note: 'فاتورة الإنترنت والكهرباء', date: '2026-08-04' },
-    { id: 'tx-4', accountId: 'acc-main', categoryId: 'cat-transport', type: 'expense', amount: 120, note: 'تنقلات الأسبوع', date: '2026-08-03' },
-  ],
-  debts: [
-    { id: 'debt-1', name: 'إيجار المنزل', amount: 3800, paid: 0, dueDate: '2026-08-28', note: 'دفعة شهر أغسطس' },
-    { id: 'debt-2', name: 'بطاقة الائتمان', amount: 1250, paid: 400, dueDate: '2026-08-19', note: 'الحد الأدنى 250 ر.س' },
-  ],
-  loans: [
-    { id: 'loan-1', name: 'سلفة أحمد', amount: 900, received: 300, dueDate: '2026-08-20', note: 'متبقي دفعتان' },
-  ],
-  goals: [
-    { id: 'goal-1', name: 'رحلة الشتاء', target: 12000, saved: 4650, deadline: '2026-12-15', color: '#AE6DB0', status: 'active' },
-    { id: 'goal-2', name: 'صندوق الطوارئ', target: 20000, saved: 13500, deadline: '2026-11-30', color: '#0C8F74', status: 'active' },
-  ],
-  settings: { id: 'singleton', currency: 'ر.س', darkMode: false },
+  accounts: [],
+  categories: [],
+  transactions: [],
+  debts: [],
+  loans: [],
+  goals: [],
+  settings: { id: 'singleton', currency: 'YER', darkMode: false },
 };
 
 export interface FinancialSummary {
@@ -139,6 +120,7 @@ interface FinanceContextValue {
   loaded: boolean;
   addTransaction: (item: Omit<TransactionItem, 'id'>) => void;
   deleteTransaction: (id: string) => void;
+  addCategory: (item: Omit<Category, 'id'>) => void;
   addAccount: (item: Omit<Account, 'id'>) => void;
   addDebt: (item: Omit<Debt, 'id'>) => void;
   addLoan: (item: Omit<Loan, 'id'>) => void;
@@ -158,7 +140,10 @@ export function FinanceProvider({ children }: PropsWithChildren) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY).then(raw => {
+    Promise.all([
+      AsyncStorage.getItem(STORAGE_KEY),
+      AsyncStorage.multiRemove(LEGACY_STORAGE_KEYS),
+    ]).then(([raw]) => {
       if (raw) {
         try { setState(JSON.parse(raw) as FinanceState); } catch { setState(initialState); }
       } else {
@@ -183,6 +168,7 @@ export function FinanceProvider({ children }: PropsWithChildren) {
       summary: calculateSummary(state),
       addTransaction: item => update(prev => ({ ...prev, transactions: [{ ...item, id: makeId() }, ...prev.transactions] })),
       deleteTransaction: id => update(prev => ({ ...prev, transactions: prev.transactions.filter(item => item.id !== id) })),
+      addCategory: item => update(prev => ({ ...prev, categories: [...prev.categories, { ...item, id: makeId() }] })),
       addAccount: item => update(prev => ({ ...prev, accounts: [...prev.accounts, { ...item, id: makeId() }] })),
       addDebt: item => update(prev => ({ ...prev, debts: [{ ...item, id: makeId() }, ...prev.debts] })),
       addLoan: item => update(prev => ({ ...prev, loans: [{ ...item, id: makeId() }, ...prev.loans] })),
