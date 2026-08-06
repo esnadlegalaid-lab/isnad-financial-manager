@@ -70,11 +70,10 @@ export interface FinanceState {
   settings: Settings;
 }
 
-const STORAGE_KEY = '@isnad_financial_manager_v3';
-const LEGACY_STORAGE_KEYS = [
-  '@isnad_financial_manager_v1',
-  '@isnad_financial_manager_v2',
-];
+// Deliberately reset local persistence on every app launch. This prevents an
+// older Expo Go/browser session from restoring data that should no longer be
+// present in the clean release.
+const STORAGE_KEY = '@isnad_financial_manager_v4_force_reset';
 const PALETTE = ['#0C8F74', '#D98E3A', '#5578C8', '#AE6DB0', '#4C9E9A', '#D85555'];
 const makeId = () => `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
@@ -140,17 +139,28 @@ export function FinanceProvider({ children }: PropsWithChildren) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    Promise.all([
-      AsyncStorage.getItem(STORAGE_KEY),
-      AsyncStorage.multiRemove(LEGACY_STORAGE_KEYS),
-    ]).then(([raw]) => {
-      if (raw) {
-        try { setState(JSON.parse(raw) as FinanceState); } catch { setState(initialState); }
-      } else {
+    let active = true;
+    const resetLocalStorage = async () => {
+      try {
+        // AsyncStorage.clear() also clears the web LocalStorage-backed store,
+        // ensuring old v1/v2/v3 keys cannot be restored on the next launch.
+        await AsyncStorage.clear();
+      } finally {
+        if (!active) return;
         setState(initialState);
+        setLoaded(true);
       }
+    };
+
+    resetLocalStorage().catch(() => {
+      if (!active) return;
+      setState(initialState);
       setLoaded(true);
     });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   useEffect(() => {
