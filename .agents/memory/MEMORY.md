@@ -1,1 +1,2 @@
 - [Expo offline storage](expo-offline-storage.md) — preserve Flutter model boundaries while using an Expo Go-compatible local store.
+- [Expo build port](expo-build-port.md) — static Expo builds need a dedicated Metro port because mockup preview commonly occupies 8081.
