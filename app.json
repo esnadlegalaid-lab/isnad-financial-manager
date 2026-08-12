@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "d8758b00-30fe-4009-a0c9-630382a75361"
+      }
+    },
+    "android": {
+      "package": "com.abdulaziz1993.workspace"
+    },
+    "ios": {
+      "bundleIdentifier": "com.abdulaziz1993.workspace",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    }
+  }
+}
