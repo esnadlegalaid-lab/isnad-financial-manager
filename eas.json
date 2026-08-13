@@ -1,0 +1,25 @@
+{
+  "cli": {
+    "version": ">= 0.52.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EAS_NO_FROZEN_LOCKFILE": "1"
+      }
+    },
+    "production": {
+      "node": "20.11.1",
+      "env": {
+        "EAS_NO_FROZEN_LOCKFILE": "1"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
