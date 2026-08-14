@@ -8,13 +8,16 @@
       "android": {
         "buildType": "apk"
       },
+      "node": "20.11.1",
       "env": {
+        "npm_config_user_agent": "pnpm/10.26.1",
         "EAS_NO_FROZEN_LOCKFILE": "1"
       }
     },
     "production": {
       "node": "20.11.1",
       "env": {
+        "npm_config_user_agent": "pnpm/10.26.1",
         "EAS_NO_FROZEN_LOCKFILE": "1"
       }
     }
