@@ -17,9 +17,11 @@
       "supportsTablet": false,
       "buildNumber": "2"
     },
-    "android": {
+       "android": {
+      "package": "com.esnad.financialmanager",
       "versionCode": 2
     },
+    
     "web": {
       "favicon": "./assets/images/icon.png"
     },
