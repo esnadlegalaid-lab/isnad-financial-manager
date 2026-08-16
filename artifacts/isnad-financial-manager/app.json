@@ -17,11 +17,10 @@
       "supportsTablet": false,
       "buildNumber": "2"
     },
-       "android": {
+    "android": {
       "package": "com.esnad.financialmanager",
       "versionCode": 2
     },
-    
     "web": {
       "favicon": "./assets/images/icon.png"
     },
@@ -38,6 +37,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d382f0a5-39d8-4592-b6fe-cd9d92b6322c"
+      }
+    },
+    "owner": "abdulaziz1993"
   }
 }
