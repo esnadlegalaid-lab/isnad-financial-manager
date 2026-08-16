@@ -6,7 +6,8 @@
   "build": {
     "preview": {
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "image": "ubuntu-24.04-jdk-17-ndk-r27b"
       },
       "node": "20.11.1",
       "pnpm": "10.26.1",
@@ -16,6 +17,10 @@
       }
     },
     "production": {
+      "android": {
+        "buildType": "apk",
+        "image": "ubuntu-24.04-jdk-17-ndk-r27b"
+      },
       "node": "20.11.1",
       "pnpm": "10.26.1",
       "env": {
